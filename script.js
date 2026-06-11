@@ -277,7 +277,44 @@ function toggleCategory(catId) {
 function toggleCheck(id) {
   items = items.map(i => i.id === id ? { ...i, checked: !i.checked } : i);
   save();
-  render();
+
+  const item = items.find(i => i.id === id);
+
+  // If a filter is active that would hide this item, do a full re-render
+  if (currentFilter !== 'all') {
+    render();
+    return;
+  }
+
+  // Surgical DOM update — no layout jump
+  const row       = document.getElementById(`item-${id}`);
+  const checkEl   = row?.querySelector('.item-check');
+  const nameEl    = row?.querySelector('.item-name');
+  const checkIcon = row?.querySelector('.check-icon');
+  if (!row || !checkEl || !nameEl) { render(); return; }
+
+  if (item.checked) {
+    row.classList.add('checked');
+    checkEl.classList.add('checked');
+    if (checkIcon) checkIcon.style.display = 'block';
+  } else {
+    row.classList.remove('checked');
+    checkEl.classList.remove('checked');
+    if (checkIcon) checkIcon.style.display = 'none';
+  }
+
+  // Update category badge
+  const catItems     = items.filter(i => i.cat === item.cat);
+  const checkedCount = catItems.filter(i => i.checked).length;
+  const allDone      = checkedCount === catItems.length;
+  const badge        = document.querySelector(`#cat-${item.cat} .category-badge`);
+  if (badge) {
+    badge.textContent = `${checkedCount}/${catItems.length}`;
+    badge.className   = allDone ? 'category-badge complete' : 'category-badge';
+  }
+
+  // Update header stats
+  renderStats();
 }
 
 function deleteItem(id) {
