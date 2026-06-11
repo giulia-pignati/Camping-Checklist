@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Camping List — Cultus Lake</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="header-title">
+        <h1>Cultus Lake</h1>
+        <p class="subtitle">Camping Checklist</p>
+      </div>
+      <div id="headerStats" class="header-stats"></div>
+    </div>
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="packed">✓ Packed</button>
+      <button class="filter-btn" data-filter="missing">○ Missing</button>
+    </div>
+  </header>
+
+  <main id="main"></main>
+
+  <!-- Floating Add Button -->
+  <button class="fab" id="fabBtn" title="Add item">+</button>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle">New Item</h2>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="field">
+        <label>Item name *</label>
+        <input type="text" id="fName" placeholder="e.g. Sleeping bag" />
+      </div>
+      <div class="field">
+        <label>Category</label>
+        <select id="fCategory">
+          <option value="gear">⛺ Gear & Estrutura</option>
+          <option value="food">🍳 Comida & Bebida</option>
+          <option value="personal">🧴 Itens Pessoais</option>
+          <option value="kids">🧸 Kids</option>
+          <option value="entertainment">🎮 Entretenimento</option>
+          <option value="safety">🩹 Segurança & Saúde</option>
+          <option value="cultus">💧 Cultus Lake Específico</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Nota <span class="optional">(opcional)</span></label>
+        <input type="text" id="fNote" placeholder="e.g. Para 3 noites" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="cancelBtn">Cancelar</button>
+        <button class="btn-save" id="saveBtn">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
