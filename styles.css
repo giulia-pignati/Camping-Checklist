@@ -479,3 +479,37 @@ main {
 }
 
 .btn-save:active { opacity: 0.85; }
+
+/* =============================================
+   UNDO DELETE STATE
+   ============================================= */
+.item-row.deleting {
+  background: #FFF3F3;
+  border-color: rgba(220, 60, 60, 0.18);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.2s;
+}
+
+.delete-msg {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: #C0392B;
+}
+
+.btn-undo {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}

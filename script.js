@@ -241,7 +241,7 @@ function renderItem(item) {
       <div class="item-name">${escHtml(item.name)}</div>
       ${noteHtml}
     </div>
-    <button class="item-delete" onclick="deleteItem(${item.id})" title="Remover">✕</button>
+    <button class="item-delete" onclick="confirmDelete(${item.id})" title="Remover">✕</button>
   </div>`;
 }
 
@@ -317,10 +317,65 @@ function toggleCheck(id) {
   renderStats();
 }
 
-function deleteItem(id) {
+const pendingDeletes = {};
+
+function confirmDelete(id) {
+  if (pendingDeletes[id]) {
+    clearTimeout(pendingDeletes[id]);
+    delete pendingDeletes[id];
+    commitDelete(id);
+    return;
+  }
+
+  const row = document.getElementById('item-' + id);
+  if (!row) return;
+
+  // Freeze current height so the list doesn't jump
+  row.style.height    = row.offsetHeight + 'px';
+  row.style.overflow  = 'hidden';
+  row.classList.add('deleting');
+  row.innerHTML = '<span class="delete-msg">Removido</span><button class="btn-undo" onclick="undoDelete(' + id + ')">Desfazer</button>';
+
+  pendingDeletes[id] = setTimeout(() => {
+    delete pendingDeletes[id];
+    commitDelete(id);
+  }, 4000);
+}
+
+function undoDelete(id) {
+  if (pendingDeletes[id]) {
+    clearTimeout(pendingDeletes[id]);
+    delete pendingDeletes[id];
+  }
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  const row = document.getElementById('item-' + id);
+  if (!row) return;
+
+  row.style.height   = '';
+  row.style.overflow = '';
+  row.classList.remove('deleting');
+  const checkClass = item.checked ? 'item-check checked' : 'item-check';
+  row.className    = item.checked ? 'item-row checked' : 'item-row';
+  row.innerHTML    =
+    '<div class="' + checkClass + '" onclick="toggleCheck(' + item.id + ')">' +
+      '<span class="check-icon" style="display:' + (item.checked ? 'block' : 'none') + '">\u2713</span>' +
+    '</div>' +
+    '<div class="item-text">' +
+      '<div class="item-name">' + escHtml(item.name) + '</div>' +
+      (item.note ? '<div class="item-note">' + escHtml(item.note) + '</div>' : '') +
+    '</div>' +
+    '<button class="item-delete" onclick="confirmDelete(' + item.id + ')" title="Remover">\u2715</button>';
+}
+
+function commitDelete(id) {
   items = items.filter(i => i.id !== id);
   save();
   render();
+}
+
+function deleteItem(id) {
+  commitDelete(id);
 }
 
 // =============================================
@@ -394,6 +449,8 @@ document.getElementById('fName').addEventListener('keydown', e => {
 window.toggleCategory = toggleCategory;
 window.toggleCheck    = toggleCheck;
 window.deleteItem     = deleteItem;
+window.confirmDelete  = confirmDelete;
+window.undoDelete     = undoDelete;
 
 // =============================================
 // INIT
